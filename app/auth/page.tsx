@@ -8,6 +8,7 @@ import Filters, { FilterState } from '@/components/Filters';
 import AppointmentTable from '@/components/AppointmentTable';
 import toast from 'react-hot-toast';
 import ExportButton from '@/components/ExportButton';
+import Header from '@/components/Header';
 
 export default function DashboardPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -84,12 +85,13 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header />
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Dashboard Anti-No-Show
+              ShowUp
             </h1>
             <p className="text-gray-600 mt-1">Gestion et suivi des rendez-vous</p>
           </div>

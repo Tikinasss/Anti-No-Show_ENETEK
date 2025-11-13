@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, User, Phone, Mail, MapPin, MessageSquare, Check, AlertCircle } from 'lucide-react';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from 'next/navigation';
+import Header from '@/components/Header';
 
 const AppointmentForm = () => {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const router = useRouter();
   
   const [formData, setFormData] = useState({
     prenom: '',
@@ -23,6 +26,9 @@ const AppointmentForm = () => {
 
   const [errors, setErrors] = useState({});
   const supabase = createClientComponentClient();
+
+  // URL du webhook n8n
+  const N8N_WEBHOOK_URL = 'https://vatosoa3.app.n8n.cloud/webhook-test/b2e218f0-0b56-4044-a136-b124500f193e';
 
   const validateStep = (currentStep) => {
     const newErrors = {};
@@ -44,6 +50,38 @@ const AppointmentForm = () => {
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Fonction pour déclencher le webhook n8n
+  const triggerN8nWebhook = async (appointmentData) => {
+    try {
+      console.log('🔔 Déclenchement du webhook n8n...');
+      
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          appointment: appointmentData,
+          timestamp: new Date().toISOString(),
+          source: 'appointment_form'
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Webhook n8n déclenché avec succès:', result);
+        return { success: true, data: result };
+      } else {
+        console.error('⚠️ Webhook n8n - réponse non OK:', response.status);
+        return { success: false, error: `Status ${response.status}` };
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors du déclenchement du webhook n8n:', error);
+      // On ne bloque pas le processus même si le webhook échoue
+      return { success: false, error: error.message };
+    }
   };
 
   const handleNext = () => {
@@ -82,8 +120,9 @@ const AppointmentForm = () => {
         statut: 'SCHEDULED'
       };
 
-      console.log('📤 Données envoyées:', payload);
+      console.log('📤 Données envoyées à Supabase:', payload);
 
+      // 1. Insertion dans Supabase
       const { data, error } = await supabase
         .from('appointments')
         .insert(payload)
@@ -94,7 +133,21 @@ const AppointmentForm = () => {
         throw error;
       }
 
-      console.log('✅ Rendez-vous créé:', data);
+      console.log('✅ Rendez-vous créé dans Supabase:', data);
+
+      // 2. Déclenchement du webhook n8n (DAG)
+      const webhookResult = await triggerN8nWebhook({
+        ...payload,
+        id: data[0]?.id, // ID du rendez-vous créé
+        created_at: data[0]?.created_at
+      });
+
+      if (webhookResult.success) {
+        console.log('✅ DAG n8n déclenché avec succès');
+      } else {
+        console.warn('⚠️ Le rendez-vous est créé mais le DAG n\'a pas été déclenché:', webhookResult.error);
+      }
+
       setSubmitStatus('success');
       setStep(3);
     } catch (error) {
@@ -136,6 +189,17 @@ const AppointmentForm = () => {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
+        <Header></Header>
+      <div className="p-4 flex justify-end">
+        <button
+          type="button"
+          onClick={() => router.push('/auth')}
+          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+        >
+          Accueil
+        </button>
+      </div>
+
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
           <h1 className="text-3xl font-bold mb-2">Prendre Rendez-vous</h1>

@@ -125,6 +125,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, Mail, User, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
 import { signUp, signIn } from '@/lib/supabase-auth';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import toast from 'react-hot-toast';
 
 export default function AuthPage() {
@@ -132,6 +133,7 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const supabase = createClientComponentClient();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -181,7 +183,12 @@ export default function AuthPage() {
         toast.success('Connexion réussie !');
         router.push('/formulaire');
       } else {
-        await signUp(formData.email, formData.password, formData.fullName);
+        // Ici : remplace ton signUp existant par celui-ci
+        await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: { data: { full_name: formData.fullName } }
+        });
         toast.success('Compte créé ! Vérifiez votre email.');
         setIsLogin(true);
       }
@@ -190,6 +197,7 @@ export default function AuthPage() {
     } finally {
       setLoading(false);
     }
+
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
