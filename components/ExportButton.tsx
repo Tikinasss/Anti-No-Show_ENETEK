@@ -2,8 +2,13 @@
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { Appointment } from '@/lib/types';
 
-export default function ExportButton() {
+interface ExportButtonProps {
+  appointments: Appointment[];
+}
+
+export default function ExportButton({ appointments }: ExportButtonProps) {
   const [loading, setLoading] = useState(false);
 
   const handleExport = async () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Lock, Mail, User, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -10,71 +10,73 @@ const AuthInterface = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  interface AuthFormData {
+    email: string;
+    password: string;
+    name?: string;
+    fullName?: string;
+    confirmPassword?: string;
+  }
+
+  interface AuthFormErrors {
+    email?: string;
+    password?: string;
+    fullName?: string;
+    confirmPassword?: string; // <-- ajouté
+  }
+
+
+  const [formData, setFormData] = useState<AuthFormData>({
     email: '',
-    password: '',
-    fullName: '',
-    confirmPassword: ''
+    password: ''
   });
-  const [errors, setErrors] = useState({});
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.email) {
-      newErrors.email = 'Email requis';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email invalide';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Mot de passe requis';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Minimum 6 caractères';
-    }
-    
-    if (!isLogin) {
-      if (!formData.fullName) {
-        newErrors.fullName = 'Nom complet requis';
-      }
-      if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Les mots de passe ne correspondent pas';
-      }
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    const [errors, setErrors] = useState<AuthFormErrors>({});
 
-  const handleSubmit = async (e) => {
+    const validate = () => {
+      const newErrors: AuthFormErrors = {};
+
+      if (!formData.email) {
+        newErrors.email = 'Email requis';
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        newErrors.email = 'Email invalide';
+      }
+
+      if (!formData.password) {
+        newErrors.password = 'Mot de passe requis';
+      }
+
+      setErrors(newErrors);
+
+      return Object.keys(newErrors).length === 0;
+    };
+
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    if (!validate()) return;
     
     setLoading(true);
     
-    try {
-      // Simuler l'appel API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      if (isLogin) {
-        console.log('Connexion avec:', formData.email);
-        router.push('/auth');
-      } else {
-        console.log('Inscription avec:', formData.email, formData.fullName);
-        router.push('/auth');
-      }
-    } catch (error) {
+  try {
+    // ton code qui peut échouer
+  } catch (error: unknown) {
+    if (error instanceof Error) {
       alert('Erreur: ' + error.message);
-    } finally {
-      setLoading(false);
+    } else {
+      alert('Erreur inconnue');
     }
+  } finally {
+    setLoading(false);
+  }
+
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) {
+
+    if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };

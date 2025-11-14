@@ -95,7 +95,7 @@ export default function DashboardPage() {
             </h1>
             <p className="text-gray-600 mt-1">Gestion et suivi des rendez-vous</p>
           </div>
-          <ExportButton />
+          <ExportButton appointments={appointments} />
         </div>
 
         {/* Stats Cards */}

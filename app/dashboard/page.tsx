@@ -4,12 +4,13 @@ import { useRouter } from 'next/navigation';
 import { LogOut, User } from 'lucide-react';
 import { Appointment, AppointmentStats } from '@/lib/types';
 import { getAppointments, getStats } from '@/lib/supabase';
-import { getCurrentUser, getUserProfile, signOut, UserProfile } from '@/lib/supabase-auth';
+import { getCurrentUser, getUserProfile, signOut } from '@/lib/supabase-auth';
 import StatsCards from '@/components/StatsCards';
 import Filters, { FilterState } from '@/components/Filters';
 import AppointmentTable from '@/components/AppointmentTable';
 import ExportButton from '@/components/ExportButton';
 import toast from 'react-hot-toast';
+import { UserProfile } from '@/lib/types';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -72,10 +73,11 @@ export default function DashboardPage() {
 
   const handleFilterChange = (filters: FilterState) => {
     let filtered = [...appointments];
-
+  
     if (filters.status) {
-      filtered = filtered.filter((a) => a.status === filters.status);
+      filtered = filtered.filter((a) => a.statut === filters.status);
     }
+
     if (filters.date) {
       filtered = filtered.filter((a) => a.date === filters.date);
     }
@@ -129,7 +131,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-medium text-gray-900">
-                    {user?.full_name || 'Utilisateur'}
+                    {user?.name || 'Utilisateur'}
                   </p>
                   <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>

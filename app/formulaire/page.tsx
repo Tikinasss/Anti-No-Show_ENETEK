@@ -9,10 +9,27 @@ import Header from '@/components/Header';
 const AppointmentForm = () => {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+
   const router = useRouter();
-  
-  const [formData, setFormData] = useState({
+
+interface FormData {
+  prenom: string;
+  phone: string;
+  email: string | null;
+  date: string;
+  heure: string;
+  lieu?: string | null;
+  conseiller?: string | null;
+  objet: string;
+  langue: 'FR' | 'EN';
+}
+
+  interface FormErrors {
+  [key: string]: string;
+}
+
+  const [formData, setFormData] = useState<FormData>({
     prenom: '',
     phone: '',
     email: '',
@@ -24,65 +41,64 @@ const AppointmentForm = () => {
     langue: 'FR'
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const supabase = createClientComponentClient();
 
   // URL du webhook n8n
   const N8N_WEBHOOK_URL = 'https://vatosoa3.app.n8n.cloud/webhook-test/b2e218f0-0b56-4044-a136-b124500f193e';
 
-  const validateStep = (currentStep) => {
-    const newErrors = {};
-    
-    if (currentStep === 1) {
-      if (!formData.prenom.trim()) newErrors.prenom = 'Le prénom est requis';
-      if (!formData.phone.trim()) newErrors.phone = 'Le téléphone est requis';
-      else if (!/^[\d\s+()-]+$/.test(formData.phone)) newErrors.phone = 'Numéro invalide';
-      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        newErrors.email = 'Email invalide';
-      }
+const validateStep = (currentStep: number): boolean => {
+  const newErrors: FormErrors = {};
+
+  if (currentStep === 1) {
+    if (!formData.prenom.trim()) newErrors.prenom = 'Le prénom est requis';
+    if (!formData.phone.trim()) newErrors.phone = 'Le téléphone est requis';
+    else if (!/^[\d\s+()-]+$/.test(formData.phone)) newErrors.phone = 'Numéro invalide';
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Email invalide';
     }
-    
-    if (currentStep === 2) {
-      if (!formData.date) newErrors.date = 'La date est requise';
-      if (!formData.heure) newErrors.heure = "L'heure est requise";
-      if (!formData.objet.trim()) newErrors.objet = "L'objet est requis";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  }
+
+  if (currentStep === 2) {
+    if (!formData.date) newErrors.date = 'La date est requise';
+    if (!formData.heure) newErrors.heure = "L'heure est requise";
+    if (!formData.objet.trim()) newErrors.objet = "L'objet est requis";
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   // Fonction pour déclencher le webhook n8n
-  const triggerN8nWebhook = async (appointmentData) => {
-    try {
-      console.log('🔔 Déclenchement du webhook n8n...');
-      
-      const response = await fetch(N8N_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          appointment: appointmentData,
-          timestamp: new Date().toISOString(),
-          source: 'appointment_form'
-        })
-      });
+    const triggerN8nWebhook = async (
+      appointmentData: FormData & { id?: string; created_at?: string }
+    ) => {
+      try {
+        console.log('🔔 Déclenchement du webhook n8n...');
+        
+        const response = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            appointment: appointmentData,
+            timestamp: new Date().toISOString(),
+            source: 'appointment_form'
+          })
+        });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log('✅ Webhook n8n déclenché avec succès:', result);
-        return { success: true, data: result };
-      } else {
-        console.error('⚠️ Webhook n8n - réponse non OK:', response.status);
-        return { success: false, error: `Status ${response.status}` };
+        if (response.ok) {
+          const result = await response.json();
+          console.log('✅ Webhook n8n déclenché avec succès:', result);
+          return { success: true, data: result };
+        } else {
+          console.error('⚠️ Webhook n8n - réponse non OK:', response.status);
+          return { success: false, error: `Status ${response.status}` };
+        }
+      } catch (error: any) {
+        console.error('❌ Erreur lors du déclenchement du webhook n8n:', error);
+        return { success: false, error: error.message };
       }
-    } catch (error) {
-      console.error('❌ Erreur lors du déclenchement du webhook n8n:', error);
-      // On ne bloque pas le processus même si le webhook échoue
-      return { success: false, error: error.message };
-    }
-  };
+    };
 
   const handleNext = () => {
     if (validateStep(step)) {
@@ -137,29 +153,27 @@ const AppointmentForm = () => {
 
       // 2. Déclenchement du webhook n8n (DAG)
       const webhookResult = await triggerN8nWebhook({
-        ...payload,
-        id: data[0]?.id, // ID du rendez-vous créé
-        created_at: data[0]?.created_at
-      });
-
+      ...payload,
+      id: data[0]?.id,
+      created_at: data[0]?.created_at
+    });
       if (webhookResult.success) {
         console.log('✅ DAG n8n déclenché avec succès');
       } else {
         console.warn('⚠️ Le rendez-vous est créé mais le DAG n\'a pas été déclenché:', webhookResult.error);
       }
-
+      
       setSubmitStatus('success');
       setStep(3);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur complète:', error);
-      setSubmitStatus('error');
       alert(`Erreur: ${error.message}`);
-    } finally {
+    }finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e:any) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) {
@@ -300,7 +314,7 @@ const AppointmentForm = () => {
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
+                    value={formData.email || ''} 
                     onChange={handleChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
                       errors.email ? 'border-red-500' : 'border-gray-300'
@@ -391,7 +405,7 @@ const AppointmentForm = () => {
                   <input
                     type="text"
                     name="lieu"
-                    value={formData.lieu}
+                    value={formData.lieu  || ''}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                     placeholder="Adresse du rendez-vous"
@@ -406,7 +420,7 @@ const AppointmentForm = () => {
                   <input
                     type="text"
                     name="conseiller"
-                    value={formData.conseiller}
+                    value={formData.conseiller || ''}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                     placeholder="Nom du conseiller (optionnel)"

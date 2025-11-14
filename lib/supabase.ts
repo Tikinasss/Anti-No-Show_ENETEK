@@ -40,6 +40,45 @@ export async function getStats(): Promise<AppointmentStats> {
     confirmed: data.confirmed,
     rescheduled: data.rescheduled,
     noShow: data.no_shows,
-    pending: data.cancelled, // mapping selon besoin
+    pending: data.cancelled,
   };
+}
+
+// ─────────────────────────────────────────────
+// 🔥 AJOUT DES FONCTIONS MANQUANTES
+// ─────────────────────────────────────────────
+
+// Récupère un rendez-vous par ID
+export async function getAppointmentById(id: string) {
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data as Appointment;
+}
+
+// Met à jour le statut d’un rendez-vous
+export async function updateAppointmentStatus(
+  id: string,
+  statut: string,
+  date?: string,
+  heure?: string
+) {
+  const updateData: any = { statut };
+
+  if (date) updateData.date = date;
+  if (heure) updateData.heure = heure;
+
+  const { data, error } = await supabase
+    .from('appointments')
+    .update(updateData)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
