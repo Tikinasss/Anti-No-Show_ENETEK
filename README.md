@@ -114,6 +114,10 @@ Les liens à inclure dans vos SMS :
 - STOP: `https://votredomaine.com/optout/[ID_RDV]`
 
 
+## 🔗 Intégration Agent IA
+Compte et clés à configurer sur https://openrouter.ai/
+
+
 ## 🔗 Intégration API meteo
 Pas de besoin de compte, ni de clés https://open-meteo.com/
 
