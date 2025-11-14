@@ -9,9 +9,12 @@ import AppointmentTable from '@/components/AppointmentTable';
 import toast from 'react-hot-toast';
 import ExportButton from '@/components/ExportButton';
 import Header from '@/components/Header';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+    
+  const router = useRouter();
   const [stats, setStats] = useState<AppointmentStats>({
     total: 0,
     confirmed: 0,
@@ -105,7 +108,10 @@ export default function DashboardPage() {
         <Filters onFilterChange={handleFilterChange} conseillers={conseillers} />
 
         {/* Appointments Table */}
-        <AppointmentTable appointments={appointments} />
+        <AppointmentTable
+        appointments={appointments}
+        onReschedule={(apt) => router.push(`/appointments/reschedule/${apt.id}`)}
+      />
       </div>
     </div>
   );

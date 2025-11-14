@@ -7,12 +7,39 @@ export function formatDate(date: string): string {
   return dayjs(date).format('DD/MM/YYYY');
 }
 
+
+export type AppointmentStatus = 
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'RESCHEDULED'
+  | 'NO_SHOW'
+  | 'OPT_OUT';
+
+
+export interface AppointmentStats {
+  total: number;
+  confirmed: number;
+  pending: number;
+  rescheduled: number;
+  noShow: number;
+  optOut: number;
+}
+
+export interface Appointment {
+  date: string;          // ex: '2025-11-14'
+  heure: string;         // ex: '14:30'
+  objet: string;         // ex: 'Rendez-vous médical'
+  lieu_lien: string;     // ex: 'Cabinet médical / lien visioconf'
+  conseiller: string;    // ex: 'Dr. Dupont'
+  status: AppointmentStatus; // le statut du rendez-vous
+}
+
 export function formatDateTime(date: string, time: string): string {
   return `${formatDate(date)} à ${time}`;
 }
 
 export function getStatusLabel(status: AppointmentStatus): string {
-  const labels = {
+  const labels: Record<AppointmentStatus, string> = {
     PENDING: 'En attente',
     CONFIRMED: 'Confirmé',
     RESCHEDULED: 'Reprogrammé',
@@ -23,7 +50,7 @@ export function getStatusLabel(status: AppointmentStatus): string {
 }
 
 export function getStatusColor(status: AppointmentStatus): string {
-  const colors = {
+  const colors: Record<AppointmentStatus, string> = {
     PENDING: 'bg-yellow-100 text-yellow-800',
     CONFIRMED: 'bg-green-100 text-green-800',
     RESCHEDULED: 'bg-blue-100 text-blue-800',

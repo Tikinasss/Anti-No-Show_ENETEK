@@ -14,6 +14,7 @@ const AppointmentForm = () => {
   const router = useRouter();
 
 interface FormData {
+  id?: string; // <-- ajouté pour l'édition
   prenom: string;
   phone: string;
   email: string | null;
