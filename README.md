@@ -13,7 +13,9 @@ L’objectif de ce projet est de proposer une solution **non pénalisante** sous
 **KPI cibles :**
 - Hausse du taux de présence de **+20 à +35 %**  
 - Nombre de confirmations et reprogrammations  
-- Suivi des no-shows et opt-outs  
+- Suivi des no-shows et opt-outs
+
+**Testez le projet en temps réel:** -> https://anti-no-show-enetek.vercel.app/
 
 ## 📦 Stack technique
 
