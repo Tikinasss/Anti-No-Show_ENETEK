@@ -21,7 +21,9 @@ L’objectif de ce projet est de proposer une solution **non pénalisante** sous
 
 - **Next.js 14** – Dashboard et pages utilisateurs  
 - **Supabase (PostgreSQL)** – Gestion des rendez-vous et utilisateurs  
-- **n8n** – Orchestration des rappels et envoi SMS/voix  
+- **n8n** – Orchestration des rappels et envoi SMS/voix
+- **OpenRouteur** – pour l'appel à l'agent IA de personnalisation de message
+- **OpenMeteo** – pour l'API meteo
 - **TopMessages** – Canal SMS et messages vocaux  
 - **TailwindCSS / TypeScript / Day.js / React Hot Toast** – UI et expérience utilisateur  
 
