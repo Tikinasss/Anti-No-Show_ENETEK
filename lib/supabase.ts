@@ -41,6 +41,7 @@ export async function getStats(): Promise<AppointmentStats> {
     rescheduled: data.rescheduled,
     noShow: data.no_shows,
     pending: data.cancelled,
+    optOut: data.opt_outs,
   };
 }
 

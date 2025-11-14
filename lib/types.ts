@@ -1,10 +1,10 @@
-export type AppointmentStatus = 
-  | 'PENDING' 
-  | 'CONFIRMED' 
-  | 'RESCHEDULED' 
-  | 'NO_SHOW' 
-  | 'OPT_OUT';
-
+export enum AppointmentStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  RESCHEDULED = 'RESCHEDULED',
+  NO_SHOW = 'NO_SHOW',
+  OPT_OUT = 'OPT_OUT',
+}
 export interface Appointment {
   id: string;
   prenom: string;
@@ -19,7 +19,7 @@ export interface Appointment {
 
   conseiller: string;
   objet: string;
-  statut: string;
+  statut: AppointmentStatus;
   langue: string;
   created_at: string;
   updated_at: string;
@@ -32,6 +32,7 @@ export interface AppointmentStats {
   rescheduled: number;
   noShow: number;
   pending: number;
+  optOut: number; 
 }
 
 export interface UserProfile {

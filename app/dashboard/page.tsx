@@ -23,6 +23,7 @@ export default function DashboardPage() {
     rescheduled: 0,
     noShow: 0,
     pending: 0,
+    optOut: 0,
   });
   const [conseillers, setConseillers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
