@@ -3,7 +3,7 @@
 
 Les absences aux rendez-vous, ou *no-shows*, représentent un problème majeur pour de nombreuses organisations : cabinets médicaux, services de conseil, formations, mais également restaurants ou événements. Avec l’avènement de la digitalisation, du télétravail et des outils de réservation en ligne, la problématique s’est accentuée : selon diverses études, **les taux de no-show peuvent atteindre 20 à 40 %** dans certains secteurs, générant des pertes économiques importantes et une mauvaise gestion des ressources.  
 
-La crise du COVID-19 a renforcé ces enjeux : le passage massif au télétravail, la multiplication des rendez-vous virtuels et les changements rapides de planning ont contribué à accroître le nombre de rendez-vous non honorés, rendant la problématique encore plus urgente.
+La crise du COVID-19 a renforcé ces enjeux : le passage massif au télétravail, la multiplication des rendez-vous virtuels et les changements rapides de planning ont contribué à accroître le nombre de rendez-vous non honorés. A ce jour, cette problématique subsiste et reste pleinement d’actualité.
 
 ## État de l’art
 
