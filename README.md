@@ -28,7 +28,7 @@ L’objectif de ce projet est de proposer une solution **non pénalisante** sous
 ## 🖥️ Workflow fonctionnel (macro)
 Voici le diagramme fonctionnel du système :
 
-![Alt text](./anti-no-show2.png)
+![Alt text](./anti-no-show-final.png)
 
 # 🚀 Configuration Dashboard 
 
