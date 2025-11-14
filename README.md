@@ -76,7 +76,7 @@ CREATE INDEX idx_appointments_date ON appointments(date);
 
 
 ## 🔐 Configuration n8n
-voir le code ici =>  
+Vous aurez aux fichiers de config json n8n [ici](problematique.md)
 
 ## 🏃‍♂️ Lancement
 
