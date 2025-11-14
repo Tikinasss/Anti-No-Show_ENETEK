@@ -113,6 +113,11 @@ Les liens à inclure dans vos SMS :
 - Reprogrammation: `https://votredomaine.com/reschedule/[ID_RDV]`
 - STOP: `https://votredomaine.com/optout/[ID_RDV]`
 
+
+## 🔗 Intégration API meteo
+Pas de besoin de compte, ni de clés https://open-meteo.com/
+
+
 ## 🌐 Déploiement
 
 ### Vercel (recommandé)
