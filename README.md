@@ -84,7 +84,7 @@ Pour la touche de boost d'engagement de l'utilisateur, nous avons intégrer des 
 
 A ne pas oublier qu'on vise une solution impactante, sous forme de **rappels proactifs et engageants** où il est crucial d'attirer efficacement l'attention de l'utilisateur. 
 
-Vous aurez aux fichiers de config json n8n [ici](problematique.md)
+Vous aurez aux fichiers de config json n8n ici : [N8N_AntiNoShow_Entek.json](N8N_AntiNoShow_Entek.json)
 
 ## 🏃‍♂️ Lancement
 
