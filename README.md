@@ -1,6 +1,6 @@
 # 🚀 Anti-No-Show  : Généralités
 
-Ce projet, développé par l'équipe Enetek, vise à réduire les **absences aux rendez-vous** grâce à des rappels proactifs, confirmations et reprogrammation autonome via SMS et messages vocaux.
+Ce projet, développé par l'équipe Enetek, vise à réduire les **absences aux rendez-vous** (présentiels ou distanciels) grâce à des rappels proactifs, confirmations et reprogrammation autonome via SMS et messages vocaux.
 
 ## 📝 Rappel des objectifs
 Pour plus de détails, voir [problematique.md](problematique.md).
